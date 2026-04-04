@@ -15,6 +15,7 @@ public:
     void send(int socket, void* data, size_t size, int flags);
     void close(int socket);
     void close();
+    bool poll();
 
 private:
     int port;

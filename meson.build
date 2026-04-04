@@ -7,6 +7,8 @@ executable(
         'src/network/windows.cpp',
         'src/network/packet.cpp',
         'src/util/util.cpp',
+        'src/server/client.cpp',
+        'src/server/server.cpp',
 
         'src/packets/handshakepacket.cpp',
         'src/packets/statusresponsepacket.cpp',

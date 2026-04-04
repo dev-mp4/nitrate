@@ -2,7 +2,7 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <cstddef>
-#include <minwindef.h>
+#include <iostream>
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -74,4 +74,18 @@ void Network::close(int socket) {
 void Network::close() {
     closesocket(server);
     WSACleanup();
+}
+
+bool Network::poll() {
+    TIMEVAL timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
+
+    fd_set set;
+    FD_ZERO(&set);
+    FD_SET(server, &set);
+
+    int count = select(0, &set, nullptr, nullptr, &timeout);
+
+    return count > 0 && FD_ISSET(server, &set);
 }
