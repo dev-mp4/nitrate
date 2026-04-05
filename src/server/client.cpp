@@ -1,18 +1,19 @@
 #include "client.hpp"
 #include "packets/pingpacket.hpp"
+#include <iostream>
 #include <network/packet.hpp>
 #include <packets/handshakepacket.hpp>
 #include <packets/statusresponsepacket.hpp>
 #include <server/server.hpp>
 
-Client::Client(int fd, Network* network) : fd(fd), state(ClientState::HANDSHAKING), network(network) {}
+Client::Client(int fd, Network* network) : fd(fd), state(ClientState::HANDSHAKING), network(network), shouldDisconnect(false) {}
 Client::~Client() {}
 
 void Client::update() {
     switch (state) {
-        case ClientState::HANDSHAKING: handleHandshake();
-        case ClientState::WAITING_FOR_SLP: sendSLP();
-        case ClientState::PINGING: respondPing();
+        case ClientState::HANDSHAKING: handleHandshake(); break;
+        case ClientState::WAITING_FOR_SLP: sendSLP(); break;
+        case ClientState::PINGING: respondPing(); break;
     }
 }
 

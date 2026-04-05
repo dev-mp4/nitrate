@@ -35,14 +35,16 @@ void Server::run() {
         if (network.poll()) {
             int client_fd = network.accept();
             clients.emplace_back(client_fd, &network);
-            std::cout << "Connected!" << std::endl;
         }
 
-        int index = 0;
-        for (auto client : clients) {
-            client.update();
-            if (client.shouldDisconnect) clients.erase(clients.begin() + index);
-            index++;
+        for (auto it = clients.begin(); it != clients.end(); ) {
+            it->update();
+
+            if (it->shouldDisconnect) {
+                it = clients.erase(it); // safe
+            } else {
+                ++it;
+            }
         }
     }
 
