@@ -1,5 +1,4 @@
 #include "server.hpp"
-#include <iostream>
 
 Server* Server::instance;
 

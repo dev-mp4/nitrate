@@ -1,36 +1,27 @@
-#ifdef _WIN32
+#ifdef __linux__
 
 #include "network.hpp"
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-#include <cstddef>
-#include <iostream>
-
-#pragma comment(lib, "ws2_32.lib")
+#include <cstdlib>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <sys/select.h>
 
 Network::Network(int port) : port(port) {}
 Network::~Network() {}
 
 bool Network::init() {
-    WSADATA wsa;
-    if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
-        return false;
-    }
-
     server = socket(AF_INET, SOCK_STREAM, 0);
-    if (server == INVALID_SOCKET) {
-        WSACleanup();
+    if (server == -1) {
         return false;
     }
 
-    sockaddr_in address;
+    struct sockaddr_in address {};
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(port);
 
-    if (bind(server, (sockaddr*)&address, sizeof(address)) == SOCKET_ERROR) {
-        closesocket(server);
-        WSACleanup();
+    if (bind(server, (struct sockaddr*)&address, sizeof(address)) < 0) {
         return false;
     }
 
@@ -38,9 +29,8 @@ bool Network::init() {
 }
 
 bool Network::listen(int backlog) {
-    if (::listen(server, backlog) == SOCKET_ERROR) {
-        closesocket(server);
-        WSACleanup();
+    if (::listen(server, backlog) < 0) {
+        close(server);
         return false;
     }
     return true;
@@ -48,12 +38,9 @@ bool Network::listen(int backlog) {
 
 int Network::accept() {
     sockaddr_in client;
-    int client_size = sizeof(client);
+    socklen_t client_size = sizeof(client);
 
-    SOCKET client_socket = ::accept(server, (sockaddr*)&client, &client_size);
-    if (client_socket == INVALID_SOCKET) {
-        return -1;
-    }
+    int client_socket = ::accept(server, (sockaddr*)&client, &client_size);
     return client_socket;
 }
 
@@ -66,24 +53,24 @@ void Network::send(int socket, void* data, size_t size, int flags) {
 }
 
 void Network::close(int socket) {
-    closesocket(socket);
+    ::close(socket);
 }
 
 void Network::close() {
-    closesocket(server);
-    WSACleanup();
+    ::close(server);
 }
 
 bool Network::poll() {
-    TIMEVAL timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 0;
-
     fd_set set;
+    struct timeval timeout;
+
     FD_ZERO(&set);
     FD_SET(server, &set);
 
-    int count = select(0, &set, nullptr, nullptr, &timeout);
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
+
+    int count = select(server + 1, &set, nullptr, nullptr, &timeout);
 
     return count > 0 && FD_ISSET(server, &set);
 }

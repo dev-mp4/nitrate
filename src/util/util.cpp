@@ -1,4 +1,5 @@
 #include "util.hpp"
+#include <cstdint>
 
 int Util::readVarInt(const uint8_t* data, size_t offset, size_t size, size_t* out_size) {
     int numRead = 0;

@@ -1,6 +1,5 @@
 #include "client.hpp"
 #include "packets/pingpacket.hpp"
-#include <iostream>
 #include <network/packet.hpp>
 #include <packets/handshakepacket.hpp>
 #include <packets/statusresponsepacket.hpp>

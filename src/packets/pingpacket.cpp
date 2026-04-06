@@ -1,6 +1,7 @@
 #include "pingpacket.hpp"
 #include <util/util.hpp>
 #include <vector>
+#include <cstdint>
 
 void PingPacket::parse(Packet& packet) {
     number = packet.readLong();

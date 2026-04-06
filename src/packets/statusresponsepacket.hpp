@@ -2,6 +2,7 @@
 #define NITRATE_STATUSRESPONSEPACKET_HPP
 
 #include <packets/ispacket.hpp>
+#include <cstdint>
 
 struct StatusResponsePacket : public ISPacket {
     std::string version;

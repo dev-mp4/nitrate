@@ -2,6 +2,7 @@
 #define NITRATE_PACKET_HPP
 
 #include <string>
+#include <cstdint>
 #include <vector>
 #include <network/network.hpp>
 

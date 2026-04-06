@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <cstdint>
 
 namespace Util {
     int readVarInt(const uint8_t* data, size_t offset, size_t size, size_t* out_size);
