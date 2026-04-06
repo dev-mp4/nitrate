@@ -5,9 +5,10 @@
 
 Supported platforms are:
 - Windows
+- Linux
 
 Other platforms are unsupported because of not implemented networking  
-If you want to add support for other platforms like Android, Linux, MacOS, see `src/network/windows.cpp` as reference and modify `meson.build`
+If you want to add support for other platforms like Android, MacOS, see `src/network/windows/linux.cpp` as reference and add your platform network implementation to `meson.build`
 
 ### TODOs and finished features
 
